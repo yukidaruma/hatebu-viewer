@@ -66,19 +66,20 @@ import store from 'store';
 
 const config = require('../config.json');
 
-const preferences = store.get('preferences') || config.defaultPreferences;
-
 export default {
   name: 'preference',
   data() {
     return {
-      preferences,
+      preferences: this.preferences,
       showOptions: config.showOptions,
       categories: config.categories,
       importJson: '',
     };
   },
   computed: {
+    preferences() {
+      return store.get('preferences') || config.defaultPreferences;
+    },
     exportJson() {
       return JSON.stringify(this.preferences);
     },
