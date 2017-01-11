@@ -129,12 +129,12 @@ export default {
           this.entries = feed.query.results.item.map((entry) => {
             /* eslint-disable no-param-reassign */
             entry.domain = entry.link.match(/^https?:\/\/(.+?)\//)[1];
-            entry.favicon = entry.encoded.match(/<img src="(http:\/\/cdn-ak\.favicon.+?)"/)[1];
-
+            const favicon = entry.encoded.match(/<img src="https?:(\/\/cdn-ak\.favicon.+?)"/)[1];
+            entry.favicon = `https://${favicon}`;
             const thumbnail = entry.encoded.match(
-              /<img src="(http:\/\/cdn-ak\.b\.st-hatena\.com\/entryimage\/.+?)"/
+              /<img src="https?:\/\/(cdn-ak\.b\.st-hatena\.com\/entryimage\/.+?)"/
             );
-            entry.thumbnail = thumbnail ? thumbnail[1] : null;
+            entry.thumbnail = thumbnail ? `https://${thumbnail[1]}` : null;
             /* eslint-enable no-param-reassign */
 
             return entry;
