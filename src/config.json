@@ -1,0 +1,29 @@
+{
+  "title": "Hatebu Viewer",
+  "defaultPreferences": {
+    "timeFormat": "relative",
+    "categoriesInGeneralTab": ["social", "economics", "life", "knowledge", "it", "fun", "entertainment", "game"],
+    "filters": {
+      "domainsText":"spam.example.net\n/(?:[^.]+\\.)?example.com/",
+      "keywordsText": "# You can comment out a line\nKeyword to filter\n/You (?:can|may) use Regular Expressions/"
+    },
+    "shownItems": ["thumbnail", "content", "date", "domain", "hatebuCount"]
+  },
+  "showOptions": [
+    { "name": "thumbnail", "label": "サムネイル" },
+    { "name": "content", "label": "本文" },
+    { "name": "date", "label": "時刻" },
+    { "name": "domain", "label": "ドメイン" },
+    { "name": "hatebuCount", "label": "はてブ数" }
+  ],
+  "categories": [
+    { "name": "social", "label": "世の中" },
+    { "name": "economics", "label": "政治と経済" },
+    { "name": "life", "label": "暮らし" },
+    { "name": "knowledge", "label": "学び" },
+    { "name": "it", "label": "テクノロジー" },
+    { "name": "fun", "label": "おもしろ" },
+    { "name": "entertainment", "label": "エンタメ" },
+    { "name": "game", "label": "アニメとゲーム" }
+  ]
+}
