@@ -117,9 +117,9 @@ export default {
             const favicon = entry.content.match(/<img src="https?:(\/\/cdn-ak2\.favicon.+?)"/)[1];
             entry.favicon = `https://${favicon}`;
             const thumbnail = entry.content.match(
-              /<img src="https?:\/\/(cdn-ak\.b\.st-hatena\.com\/entryimage\/.+?)"/
+              /<img src="(https?:\/\/cdn-ak-scissors.+?)"/
             );
-            entry.thumbnail = thumbnail ? `https://${thumbnail[1]}` : null;
+            entry.thumbnail = thumbnail ? thumbnail[1] : null;
 
             entry.category = config.categories
               .find(category => category.label === entry.categories[0]).name;
