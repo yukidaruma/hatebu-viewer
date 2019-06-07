@@ -5,19 +5,19 @@
         <a :href="entry.link" target="_blank">{{ entry.title }}</a>
       </div>
     </div>
-    <div class="body" v-if="thumbnailVisibility || contentVisibility">
+    <div class="body" v-if="visibility.thumbnail || visibility.content">
       <div
         :style="`background-image: url(${entry.thumbnail});`"
-        v-if="thumbnailVisibility && entry.thumbnail" class="thumbnail"></div><!--
-      --><p v-if="contentVisibility">{{ entry.description }}</p>
+        v-if="visibility.thumbnail && entry.thumbnail" class="thumbnail"></div><!--
+      --><p v-if="visibility.content">{{ entry.description }}</p>
     </div>
-    <div class="footer" v-if="dateVisibility || domainVisibility || hatebuCountVisibility">
-      <time :datetime="entry.date" v-if="dateVisibility">{{ formattedDate }}</time><!--
-         --><span class="domain" v-if="domainVisibility"><!--
+    <div class="footer" v-if="visibility.date || visibility.domain || visibility.hatebuCount">
+      <time :datetime="entry.date" v-if="visibility.date">{{ formattedDate }}</time><!--
+         --><span class="domain" v-if="visibility.domain"><!--
            --><a :href="`http://b.hatena.ne.jp/entrylist?url=${entry.domain}`">{{ entry.domain }}</a><!--
          --></span><!--
-         --><span class="hatebucount" v-if="hatebuCountVisibility"><!--
-           --><a :href="`http://b.hatena.ne.jp/entry/${entry.link}`">{{ bookmarkcount }} Users</a><!--
+         --><span class="hatebucount" v-if="visibility.hatebuCount"><!--
+           --><a :href="`http://b.hatena.ne.jp/entry/${entry.link}`">{{ hatebuCount }} Users</a><!--
          --></span><!--
       --></div>
   </div>
@@ -26,26 +26,16 @@
 <script>
 import moment from 'moment';
 
-const visibility = (visibleItems, name) => visibleItems.indexOf(name) !== -1;
-
 export default {
   name: 'entry',
   props: ['entry', 'timeFormat', 'shownItems'],
   computed: {
-    thumbnailVisibility() {
-      return visibility(this.shownItems, 'thumbnail');
-    },
-    contentVisibility() {
-      return visibility(this.shownItems, 'content');
-    },
-    dateVisibility() {
-      return visibility(this.shownItems, 'date');
-    },
-    domainVisibility() {
-      return visibility(this.shownItems, 'domain');
-    },
-    hatebuCountVisibility() {
-      return visibility(this.shownItems, 'hatebuCount');
+    visibility() {
+      const visibility = {};
+      ['thumbnail', 'content', 'date', 'domain', 'hatebuCount'].forEach((key) => {
+        visibility[key] = this.shownItems.includes(key);
+      });
+      return visibility;
     },
     formattedDate() {
       if (this.timeFormat === 'relative') return this.fromNow;
@@ -58,7 +48,7 @@ export default {
     },
   },
   asyncComputed: {
-    bookmarkcount: {
+    hatebuCount: {
       async get() {
         return await this.$jsonp('https://api.b.st-hatena.com/entry.count', { url: this.entry.link });
       },
