@@ -17,7 +17,7 @@
            --><a :href="`http://b.hatena.ne.jp/entrylist?url=${entry.domain}`">{{ entry.domain }}</a><!--
          --></span><!--
          --><span class="hatebucount" v-if="hatebuCountVisibility"><!--
-           --><a :href="`http://b.hatena.ne.jp/entry/${entry.link}`">{{ entry.bookmarkcount }} Users</a><!--
+           --><a :href="`http://b.hatena.ne.jp/entry/${entry.link}`">{{ bookmarkcount }} Users</a><!--
          --></span><!--
       --></div>
   </div>
@@ -51,10 +51,18 @@ export default {
       if (this.timeFormat === 'relative') return this.fromNow;
 
       // absolute time
-      return moment(this.entry.date).format('MM/DD HH:mm:ss');
+      return moment(this.entry.pubDate).format('MM/DD HH:mm:ss');
     },
     fromNow() {
-      return moment(this.entry.date).fromNow();
+      return moment(this.entry.pubDate).fromNow();
+    },
+  },
+  asyncComputed: {
+    bookmarkcount: {
+      async get() {
+        return await this.$jsonp('https://api.b.st-hatena.com/entry.count', { url: this.entry.link });
+      },
+      default: '-',
     },
   },
 };

@@ -63,21 +63,12 @@ export default {
 
       return this.entries
         .filter((entry) => {
-          const getCategoryName = (_entry) => {
-            // some entry doesn't have subject
-            if (_entry.subject) {
-              return config.categories.find(category => category.label === _entry.subject).name;
-            }
-            return false;
-          };
-          const categoryName = getCategoryName(entry);
-
           if (filterRegExp(urlFilters).test(entry.domain)) {
             return false;
           } else if (filterRegExp(keywordFilters).test(entry.title) ||
             filterRegExp(keywordFilters).test(entry.description)) {
             return false;
-          } else if (this.preferences.categoriesInGeneralTab.indexOf(categoryName) === -1) {
+          } else if (!this.preferences.categoriesInGeneralTab.includes(entry.category)) {
             return false;
           }
 
@@ -99,42 +90,39 @@ export default {
       this.ready = false;
 
       const categoryName = this.$route.params.category;
-      const category = config.categories.find(_category => categoryName === _category.name);
-      if (!category) this.$router.push(`/${this.type}`);
 
       // eslint-disable-nextline no-undef
-      const yqlUrl = new URL('https://query.yahooapis.com/v1/public/yql');
-      let feedUrl;
-      if (!category) {
-        feedUrl = `http://b.hatena.ne.jp/${this.type}.rss`;
-      } else {
-        feedUrl = `http://b.hatena.ne.jp/${this.type}/${category.name}.rss`;
-      }
+      const rss2JsonUrl = new URL('https://api.rss2json.com/v1/api.json');
+      const feedUrl =
+        categoryName ? `http://b.hatena.ne.jp/${this.type}/${categoryName}.rss` :
+          `http://b.hatena.ne.jp/${this.type}.rss`;
 
       const params = {
-        format: 'json',
-        q: `select * from rss where url='${feedUrl}'`,
+        rss_url: feedUrl,
       };
-      Object.keys(params).forEach(key => yqlUrl.searchParams.append(key, params[key]));
+      Object.keys(params).forEach(key => rss2JsonUrl.searchParams.append(key, params[key]));
 
-      fetch(yqlUrl)
+      fetch(rss2JsonUrl)
         .then(res => res.json())
         .then((feed) => {
-          if (feed.query.count === 0) {
+          if (feed.status !== 'ok') {
             this.failed = true;
             return;
           }
 
           this.failed = false;
-          this.entries = feed.query.results.item.map((entry) => {
+          this.entries = feed.items.map((entry) => {
             /* eslint-disable no-param-reassign */
             entry.domain = entry.link.match(/^https?:\/\/(.+?)\//)[1];
-            const favicon = entry.encoded.match(/<img src="https?:(\/\/cdn-ak\.favicon.+?)"/)[1];
+            const favicon = entry.content.match(/<img src="https?:(\/\/cdn-ak2\.favicon.+?)"/)[1];
             entry.favicon = `https://${favicon}`;
-            const thumbnail = entry.encoded.match(
+            const thumbnail = entry.content.match(
               /<img src="https?:\/\/(cdn-ak\.b\.st-hatena\.com\/entryimage\/.+?)"/
             );
             entry.thumbnail = thumbnail ? `https://${thumbnail[1]}` : null;
+
+            entry.category = config.categories
+              .find(category => category.label === entry.categories[0]).name;
             /* eslint-enable no-param-reassign */
 
             return entry;

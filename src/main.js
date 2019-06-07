@@ -2,6 +2,8 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue';
 import VueRouter from 'vue-router';
+import VueJsonp from 'vue-jsonp';
+import AsyncComputed from 'vue-async-computed';
 import App from './App';
 import Entrylist from './components/Entrylist';
 import Hotentry from './components/Hotentry';
@@ -10,7 +12,10 @@ import PreferenceImport from './components/PreferenceImport';
 import PreferenceExport from './components/PreferenceExport';
 
 Vue.use(VueRouter);
+Vue.use(VueJsonp);
+Vue.use(AsyncComputed);
 
+// TODO category validity
 const routes = [
   { path: '/entrylist', component: Entrylist },
   { path: '/entrylist/:category', component: Entrylist },
