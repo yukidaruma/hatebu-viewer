@@ -68,7 +68,10 @@ export default {
           } else if (filterRegExp(keywordFilters).test(entry.title) ||
             filterRegExp(keywordFilters).test(entry.description)) {
             return false;
-          } else if (!this.preferences.categoriesInGeneralTab.includes(entry.category)) {
+
+          // Category filter should only be applied in general tab
+          } else if (!this.$route.params.category &&
+            !this.preferences.categoriesInGeneralTab.includes(entry.category)) {
             return false;
           }
 
