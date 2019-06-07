@@ -70,16 +70,13 @@ export default {
   name: 'preference',
   data() {
     return {
-      preferences: this.preferences,
+      preferences: store.get('preferences') || config.defaultPreferences,
       showOptions: config.showOptions,
       categories: config.categories,
       importJson: '',
     };
   },
   computed: {
-    preferences() {
-      return store.get('preferences') || config.defaultPreferences;
-    },
     exportJson() {
       return JSON.stringify(this.preferences);
     },
