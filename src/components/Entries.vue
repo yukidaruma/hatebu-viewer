@@ -115,19 +115,9 @@ export default {
 
           this.failed = false;
           this.entries = feed.items.map((entry) => {
-            /* eslint-disable no-param-reassign */
-            entry.domain = entry.link.match(/^https?:\/\/(.+?)\//)[1];
-            const favicon = entry.content.match(/<img src="https?:(\/\/cdn-ak2\.favicon.+?)"/)[1];
-            entry.favicon = `https://${favicon}`;
-            const thumbnail = entry.content.match(
-              /<img src="(https?:\/\/cdn-ak-scissors.+?)"/
-            );
-            entry.thumbnail = thumbnail ? thumbnail[1] : null;
-
+            // eslint-disable-next-line no-param-reassign
             entry.category = config.categories
               .find(category => category.label === entry.categories[0]).name;
-            /* eslint-enable no-param-reassign */
-
             return entry;
           });
           this.ready = true;

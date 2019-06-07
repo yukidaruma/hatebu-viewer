@@ -1,20 +1,20 @@
 <template>
   <div>
     <div class="header">
-      <div :style="`background-image: url(${entry.favicon})`" class="favicon">
+      <div :style="{ backgroundImage: `url(${favicon})` }" class="favicon">
         <a :href="entry.link" target="_blank">{{ entry.title }}</a>
       </div>
     </div>
     <div class="body" v-if="visibility.thumbnail || visibility.content">
       <div
-        :style="`background-image: url(${entry.thumbnail});`"
-        v-if="visibility.thumbnail && entry.thumbnail" class="thumbnail"></div><!--
+        :style="{ backgroundImage: `url(${thumbnail})` }"
+        v-if="visibility.thumbnail && thumbnail" class="thumbnail"></div><!--
       --><p v-if="visibility.content">{{ entry.description }}</p>
     </div>
     <div class="footer" v-if="visibility.date || visibility.domain || visibility.hatebuCount">
       <time :datetime="entry.date" v-if="visibility.date">{{ formattedDate }}</time><!--
          --><span class="domain" v-if="visibility.domain"><!--
-           --><a :href="`http://b.hatena.ne.jp/entrylist?url=${entry.domain}`">{{ entry.domain }}</a><!--
+           --><a :href="`http://b.hatena.ne.jp/entrylist?url=${domain}`">{{ domain }}</a><!--
          --></span><!--
          --><span class="hatebucount" v-if="visibility.hatebuCount"><!--
            --><a :href="`http://b.hatena.ne.jp/entry/${entry.link}`">{{ hatebuCount }} Users</a><!--
@@ -45,6 +45,20 @@ export default {
     },
     fromNow() {
       return moment(this.entry.pubDate).fromNow();
+    },
+    domain() {
+      return this.entry.link.match(/^https?:\/\/(.+?)\//)[1];
+    },
+    favicon() {
+      return this.entry.content.match(
+        /<img src="(https?:\/\/cdn-ak2\.favicon.+?)"/
+      )[1];
+    },
+    thumbnail() {
+      const thumbnail = this.entry.content.match(
+        /<img src="(https?:\/\/cdn-ak-scissors.+?)"/
+      );
+      return thumbnail ? thumbnail[1] : null;
     },
   },
   asyncComputed: {
