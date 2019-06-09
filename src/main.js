@@ -10,17 +10,19 @@ import Hotentry from './components/Hotentry';
 import Preference from './components/Preference';
 import PreferenceImport from './components/PreferenceImport';
 import PreferenceExport from './components/PreferenceExport';
+import config from './config.json';
 
 Vue.use(VueRouter);
 Vue.use(VueJsonp);
 Vue.use(AsyncComputed);
 
-// TODO category validity
+const categoriesPattern = config.categories.map(category => category.name).join('|');
+
 const routes = [
   { path: '/entrylist', component: Entrylist },
-  { path: '/entrylist/:category', component: Entrylist },
+  { path: `/entrylist/:category(${categoriesPattern})`, component: Entrylist },
   { path: '/hotentry', component: Hotentry },
-  { path: '/hotentry/:category', component: Hotentry },
+  { path: `/hotentry/:category(${categoriesPattern})`, component: Hotentry },
   { path: '/preferences', component: Preference },
   { path: '/preferences/import', component: PreferenceImport },
   { path: '/preferences/export', component: PreferenceExport },
